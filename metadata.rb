@@ -1,0 +1,5 @@
+name 'limits'
+version '0.0.1'
+maintainer       'Opscode, Inc.'
+maintainer_email 'ops@opscode.com'
+license          'All rights reserved'
