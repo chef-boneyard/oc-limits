@@ -18,10 +18,10 @@
 #
 
 name              'oc-limits'
-version           '0.0.3'
+version           '0.0.4'
 maintainer        'Chef Software, Inc.'
 maintainer_email  'ops@getchef.com'
 license           'Apache 2.0'
 
 supports  'ubuntu'
-depends   'runit', '~> 1.5.8'
+depends   'runit', '~> 1.4'
