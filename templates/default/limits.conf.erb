@@ -8,7 +8,7 @@
 <% @limits.each do |domain,types| %>
   <% types.each do |type,items| %>
     <% items.each do |item,value| %>
-<%= "%-12s %-12s %-12s %-12s" % [ domain, item, type, value ] %>
+<%= "%-12s %-12s %-12s %-12s" % [ domain == 'star' ? '*' : domain, item, type, value ] %>
     <% end %>
   <% end %>
 <% end %>

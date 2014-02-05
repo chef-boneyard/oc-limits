@@ -1,14 +1,25 @@
 require 'spec_helper'
 
 # Write unit tests with ChefSpec - https://github.com/sethvargo/chefspec#readme
-describe 'skeleton::default' do
-  let(:chef_run) { ChefSpec::Runner.new.converge(described_recipe) }
+describe 'oc-limits::default' do
+  context 'ubuntu 12.04' do
+    let(:chef_run) do
+      ChefSpec::Runner.new(
+        :platform => 'ubuntu',
+        :version => '12.04'
+      ).converge(described_recipe)
+    end
 
-  it 'logs a sample message' do
-    expect(chef_run).to write_log 'replace this with a meaningful resource'
-  end
+    it 'creates a template for limits.conf' do
+      expect(chef_run).to create_template('/etc/security/limits.conf')
+    end
 
-  it 'does something' do
-    pending 'Replace this with meaningful tests'
+    it 'creates a template for runsvdir.conf' do
+      expect(chef_run).to create_template('/etc/init/runsvdir.conf')
+    end
+
+    it 'sends the notification to restart runit' do
+      expect(chef_run.template('/etc/init/runsvdir.conf')).to notify('bash[restart runit]').to(:run).immediately
+    end
   end
 end

@@ -5,7 +5,7 @@ driver:
     memory: 512
 
 provisioner:
-  name: chef_zero
+  name: chef_solo
 
 platforms:
   - name: ubuntu-12.04
@@ -13,5 +13,10 @@ platforms:
 suites:
   - name: default
     run_list:
-      - recipe[skeleton::default]
+      - recipe[oc-limits::default]
     attributes:
+     limits:
+       star:
+         notlegit:
+           hard: 'unlimited'
+           soft: 'unlimited'
