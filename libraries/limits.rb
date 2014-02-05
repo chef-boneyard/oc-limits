@@ -1,6 +1,6 @@
 #
 # Cookbook Name:: oc-limits
-# Recipe:: default
+# Libraries:: limits
 #
 # Author: Paul Mooring <paul@getchef.com>
 # Copyright (c) 2014, Chef Software, Inc <legal@getchef.com>
@@ -18,27 +18,28 @@
 # limitations under the License.
 #
 
-template '/etc/security/limits.conf' do
-  source 'limits.conf.erb'
-  variables(:limits => node['limits'].to_hash)
-end
+class Chef::Recipe::LimitsHelpers
+  # upstart pukes if you give it a limit it doesn't know, so it needs to be filtered
+  @upstart_limits = [
+    'as',
+    'core',
+    'cpu',
+    'data',
+    'fsize',
+    'memlock',
+    'msgqueue',
+    'nice',
+    'nofile',
+    'nproc',
+    'rss',
+    'rtprio',
+    'sigpending',
+    'stack'
+  ]
 
-include_recipe 'runit'
-
-bash 'restart runit' do
-  user 'root'
-  cwd '/tmp'
-  code <<-EOH
-    kill -HUP 1
-    stop runsvdir
-    sleep 2
-    start runsvdir
-  EOH
-  action :nothing
-end
-
-template '/etc/init/runsvdir.conf' do
-  source 'runsvdir.conf.erb'
-  variables(:filtered_limits => LimitsHelpers.filter_limits(node['limits']['star'].to_hash))
-  notifies :run, 'bash[restart runit]', :immediately
+  def self.filter_limits(limits)
+    limits.select do |k, v|
+      @upstart_limits.include?(k)
+    end
+  end
 end
